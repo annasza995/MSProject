@@ -1,3 +1,5 @@
+library(moments) 
+
 blueberriesData <- scan("blueberriesData.txt", double(), quote = "")
 redberriesData <- scan("redberriesData.txt", double(), quote = "")
 
@@ -15,9 +17,9 @@ MeasuresOfAssociation <- function(data)
     checkTab <- tabulate(countTab);
     
     if(checkTab[resultCount] > 1)
-      return(NA);
+      return (NA)
     
-    return(uniqueVector[resultIndex]);
+    return (uniqueVector[resultIndex])
   }
   
   result <- vector(mode = "list", length = 7)
@@ -43,7 +45,7 @@ MeasuresOfAssociation <- function(data)
   names(result)[EMeasuresOfAssociation$Maximum] ="Fourth quartile - maximum"
   result[EMeasuresOfAssociation$Maximum] <- quantile(data, 1.00)
   
-  return (result);
+  return (result)
 }
 
 EMeasuresOfDiversity <- list(ResultsRange = 1, InterquartileRange = 2, Variance = 3, StandardDeviation = 4, VariationCoefficient = 5)
@@ -72,13 +74,41 @@ MeasuresOfDiversity <- function(data, associationMeasuresData)
   names(result)[EMeasuresOfDiversity$VariationCoefficient] = "VariationCoefficient"
   result[EMeasuresOfDiversity$VariationCoefficient] <- (standardDeviation / associationMeasuresData[[EMeasuresOfAssociation$Mean]])
   
-  return (result);
+  return (result)
+}
+
+EMeasuresOfAsymmetry <- list(SkewnessCoefficient = 1)
+
+MeasuresOfAsymmetry <-function(data)
+{
+  result <- vector(mode = "list", length = 1)
+  
+  names(result)[EMeasuresOfAsymmetry$SkewnessCoefficient] = "SkewnessCoefficient"
+  result[EMeasuresOfAsymmetry$SkewnessCoefficient] <- skewness(data)
+  
+  return (result)
+}
+
+EMeasuresOfConcentration <- list(Kurtosis = 1)
+
+MeasuresOfConcentration <-function(data)
+{
+  result <- vector(mode = "list", length = 1)
+  
+  names(result)[EMeasuresOfConcentration$Kurtosis] = "Kurtosis"
+  result[EMeasuresOfConcentration$Kurtosis] <- kurtosis(data)
+  
+  return (result)
 }
 
 blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
 blueberriesMeasuresOfAssociations
 MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
+MeasuresOfAsymmetry(blueberriesData)
+MeasuresOfConcentration(blueberriesData)
 
 redberriesMeasuresOfAssociations <- MeasuresOfAssociation(redberriesData)
 redberriesMeasuresOfAssociations
 MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
+MeasuresOfAsymmetry(redberriesData)
+MeasuresOfConcentration(redberriesData)
