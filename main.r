@@ -46,5 +46,39 @@ MeasuresOfAssociation <- function(data)
   return (result);
 }
 
-measuresOfAssociation(blueberriesData)
-measuresOfAssociation(redberriesData)
+EMeasuresOfDiversity <- list(ResultsRange = 1, InterquartileRange = 2, Variance = 3, StandardDeviation = 4, VariationCoefficient = 5)
+
+MeasuresOfDiversity <- function(data, associationMeasuresData)
+{
+  result <- vector(mode = "list", length = 5)
+  
+  names(result)[EMeasuresOfDiversity$ResultsRange] = "ResultsRange"
+  result[EMeasuresOfDiversity$ResultsRange] <- (associationMeasuresData[[EMeasuresOfAssociation$Maximum]] - associationMeasuresData[[EMeasuresOfAssociation$Minimum]]) 
+
+  names(result)[EMeasuresOfDiversity$InterquartileRange] = "InterquartileRange"
+  result[EMeasuresOfDiversity$InterquartileRange] <- IQR(data)
+
+  dataLength <- length(data)
+  variance <- var(data) * (dataLength - 1) / dataLength;  
+
+  names(result)[EMeasuresOfDiversity$Variance] = "Variance"
+  result[EMeasuresOfDiversity$Variance] <- variance
+  
+  standardDeviation <- sqrt(variance)
+  
+  names(result)[EMeasuresOfDiversity$StandardDeviation] = "StandardDeviation"
+  result[EMeasuresOfDiversity$StandardDeviation] <- standardDeviation
+    
+  names(result)[EMeasuresOfDiversity$VariationCoefficient] = "VariationCoefficient"
+  result[EMeasuresOfDiversity$VariationCoefficient] <- (standardDeviation / associationMeasuresData[[EMeasuresOfAssociation$Mean]])
+  
+  return (result);
+}
+
+blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
+blueberriesMeasuresOfAssociations
+MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
+
+redberriesMeasuresOfAssociations <- MeasuresOfAssociation(redberriesData)
+redberriesMeasuresOfAssociations
+MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
