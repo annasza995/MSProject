@@ -101,14 +101,31 @@ MeasuresOfConcentration <-function(data)
   return (result)
 }
 
+CalculateHistogramBreaks <- function(data, associationMeasuresData)
+{
+  minimum <- associationMeasuresData[[EMeasuresOfAssociation$Minimum]]
+  maximum <- associationMeasuresData[[EMeasuresOfAssociation$Maximum]]
+  rangeLength <- (maximum - minimum) / sqrt(length(data))
+  
+  result <- seq(minimum, maximum, rangeLength)
+  
+  return (result);
+}
+
 blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
 blueberriesMeasuresOfAssociations
 MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
 MeasuresOfAsymmetry(blueberriesData)
 MeasuresOfConcentration(blueberriesData)
+blueberriesHistogramBreaks <- CalculateHistogramBreaks(blueberriesData, blueberriesMeasuresOfAssociations)
+
+#hist(blueberriesData, breaks = blueberriesHistogramBreaks)
 
 redberriesMeasuresOfAssociations <- MeasuresOfAssociation(redberriesData)
 redberriesMeasuresOfAssociations
 MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
 MeasuresOfAsymmetry(redberriesData)
 MeasuresOfConcentration(redberriesData)
+redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberriesMeasuresOfAssociations)
+
+#hist(redberriesData, breaks = redberriesHistogramBreaks)
