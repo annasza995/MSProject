@@ -129,3 +129,131 @@ MeasuresOfConcentration(redberriesData)
 redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberriesMeasuresOfAssociations)
 
 #hist(redberriesData, breaks = redberriesHistogramBreaks)
+
+#zadanie 2 
+
+data<- sort(blueberriesData)
+n <-length(data)
+standardScore<-data 
+empiricalDistribution<-data 
+hypotheticalDistribution <- data
+difference <-data
+mean<-mean(data)
+standardDeviation<- sd(data)
+distributionTable = 0.264 
+
+for (i in 1:n) 
+{
+  standardScore[i] <- (data[i]- mean)/standardDeviation
+}
+
+for (i in 1:n) 
+{
+  hypotheticalDistribution[i] <- pnorm(standardScore[i])
+}
+
+for (i in 1:n) 
+{
+ empiricalDistribution[i]<-i/ length(data)
+}
+
+
+for (i in 1:n) 
+{
+  difference[i] <-abs(hypotheticalDistribution[i] - empiricalDistribution[i])
+}
+
+testStatisticValue<-max (difference)
+
+#writeLines("H0 - normal distribution\n")
+#writeLines("H1 - non normal distribution\n")
+
+writeLines("blueberries:\n")
+if(testStatisticValue < distributionTable || testStatisticValue> 1){
+  writeLines("We can't rule out hypothesis H0\n")
+  writeLines("Normal distribution\n")
+}else{
+  writeLines("We can rule out hypothesis H0\n")
+  writeLines("Non normal distribuion\n")
+}
+
+data<- sort(redberriesData)
+n <-length(data)
+standardScore<-data 
+empiricalDistribution<-data 
+hypotheticalDistribution <- data
+difference <-data
+mean<-mean(data)
+standardDeviation<- sd(data)
+distributionTable = 0.264 
+
+for (i in 1:n) 
+{
+  standardScore[i] <- (data[i]- mean)/standardDeviation
+}
+
+for (i in 1:n) 
+{
+  hypotheticalDistribution[i] <- pnorm(standardScore[i])
+}
+
+for (i in 1:n) 
+{
+  empiricalDistribution[i]<-i/ length(data)
+}
+
+
+for (i in 1:n) 
+{
+  difference[i] <-abs(hypotheticalDistribution[i] - empiricalDistribution[i])
+}
+
+testStatisticValue<-max (difference)
+
+#writeLines("H0 - normal distribution\n")
+#writeLines("H1 - non normal distribution\n")
+
+writeLines("blueberries:\n")
+if(testStatisticValue < distributionTable || testStatisticValue> 1){
+  writeLines("We can't rule out hypothesis H0\n")
+  writeLines("Normal distribution\n")
+}else{
+  writeLines("We can rule out hypothesis H0\n")
+  writeLines("Non normal distribuion\n")
+}
+
+
+#zad 3 
+TStudentFactor <- function(confident, n)
+{
+  return (qt ((1-confident ) /2,n-1, lower.tail = FALSE, log.p = FALSE))
+}
+
+lowerLimitMean <- function(mean, factor, deviation, number)
+{
+  lowerLimit = mean - factor *(deviation/ sqrt (number - 1))
+  return (lowerLimit)  
+}
+
+upperLimitMean <- function(mean, factor, deviation, number)
+{
+  upperLimit = mean + factor *(deviation/ sqrt (number - 1))
+  return (upperLimit)  
+}
+
+meanPrecision <-function (ul, ll, mean)
+{
+  estimateprecision = 0.5 * (ul-ll)/ mean
+  return (estimateprecision)
+}
+
+
+meanRedberries <- sum(redberriesData) / length (redberriesData)
+
+upperLimitRedberries <- upperLimitMean(meanRedberries,TStudentFactor(0.98,25 ), standardDeviation, length (redberriesData))
+lowerLimitRedberries <- lowerLimitMean(meanRedberries,TStudentFactor(0.98,25 ), standardDeviation, length (redberriesData))
+
+precisionRedberries <- meanPrecision(upperLimitRedberries, lowerLimitRedberries, meanRedberries)
+
+
+print(precisionRedberries)
