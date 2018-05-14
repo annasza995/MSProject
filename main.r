@@ -130,130 +130,75 @@ redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberries
 
 #hist(redberriesData, breaks = redberriesHistogramBreaks)
 
-#zadanie 2 
 
-data<- sort(blueberriesData)
+
+
+
+Kolmogorow <- function(database)
+  
+{
+data<- sort(database) 
 n <-length(data)
 standardScore<-data 
 empiricalDistribution<-data 
-hypotheticalDistribution <- data
-difference <-data
-mean<-mean(data)
-standardDeviation<- sd(data)
-distributionTable = 0.264 
-
-for (i in 1:n) 
-{
-  standardScore[i] <- (data[i]- mean)/standardDeviation
-}
+empiricalDistributionTWo<-data 
+#differenceTwo <-data
 
 for (i in 1:n) 
 {
   hypotheticalDistribution[i] <- pnorm(standardScore[i])
 }
 
-for (i in 1:n) 
-{
- empiricalDistribution[i]<-i/ length(data)
-}
-
-
-for (i in 1:n) 
-{
-  difference[i] <-abs(hypotheticalDistribution[i] - empiricalDistribution[i])
-}
-
-testStatisticValue<-max (difference)
-
-#writeLines("H0 - normal distribution\n")
-#writeLines("H1 - non normal distribution\n")
-
-writeLines("blueberries:\n")
-if(testStatisticValue < distributionTable || testStatisticValue> 1){
-  writeLines("We can't rule out hypothesis H0\n")
-  writeLines("Normal distribution\n")
-}else{
-  writeLines("We can rule out hypothesis H0\n")
-  writeLines("Non normal distribuion\n")
-}
-
-data<- sort(redberriesData)
-n <-length(data)
-standardScore<-data 
-empiricalDistribution<-data 
-hypotheticalDistribution <- data
-difference <-data
-mean<-mean(data)
-standardDeviation<- sd(data)
-distributionTable = 0.264 
-
-for (i in 1:n) 
-{
-  standardScore[i] <- (data[i]- mean)/standardDeviation
-}
-
-for (i in 1:n) 
-{
-  hypotheticalDistribution[i] <- pnorm(standardScore[i])
-}
 
 for (i in 1:n) 
 {
   empiricalDistribution[i]<-i/ length(data)
 }
 
+for (i in 1:n) 
+{
+  empiricalDistributionTWo[i]<- ((i-1)/ length(data))
+}
 
 for (i in 1:n) 
 {
   difference[i] <-abs(hypotheticalDistribution[i] - empiricalDistribution[i])
 }
 
-testStatisticValue<-max (difference)
+for (i in 1:n) 
+{
+  differenceTwo[i] <-abs(hypotheticalDistribution[i] - empiricalDistributionTWo[i])
+}
+
+
+tmp <-max (difference)
+tmpTwo <-max (differenceTwo)
+testStatisticValue <-pmax (difference, differenceTwo)
+
 
 #writeLines("H0 - normal distribution\n")
 #writeLines("H1 - non normal distribution\n")
 
-writeLines("blueberries:\n")
-if(testStatisticValue < distributionTable || testStatisticValue> 1){
+
+
+if(testStatisticValue < distributionTable || testStatisticValue> 1)
+{
   writeLines("We can't rule out hypothesis H0\n")
   writeLines("Normal distribution\n")
-}else{
+}
+
+else{
   writeLines("We can rule out hypothesis H0\n")
   writeLines("Non normal distribuion\n")
+
+}
 }
 
+writeLines("blueberries:\n")
+blueberrieKolmogorow <- Kolmogorow(blueberriesData)
 
-#zad 3 
-TStudentFactor <- function(confident, n)
-{
-  return (qt ((1-confident ) /2,n-1, lower.tail = FALSE, log.p = FALSE))
-}
-
-lowerLimitMean <- function(mean, factor, deviation, number)
-{
-  lowerLimit = mean - factor *(deviation/ sqrt (number - 1))
-  return (lowerLimit)  
-}
-
-upperLimitMean <- function(mean, factor, deviation, number)
-{
-  upperLimit = mean + factor *(deviation/ sqrt (number - 1))
-  return (upperLimit)  
-}
-
-meanPrecision <-function (ul, ll, mean)
-{
-  estimateprecision = 0.5 * (ul-ll)/ mean
-  return (estimateprecision)
-}
+writeLines("redberries:\n")
+redberrieKolmogorow <- Kolmogorow(redberriesData)
+ 
 
 
-meanRedberries <- sum(redberriesData) / length (redberriesData)
-
-upperLimitRedberries <- upperLimitMean(meanRedberries,TStudentFactor(0.98,25 ), standardDeviation, length (redberriesData))
-lowerLimitRedberries <- lowerLimitMean(meanRedberries,TStudentFactor(0.98,25 ), standardDeviation, length (redberriesData))
-
-precisionRedberries <- meanPrecision(upperLimitRedberries, lowerLimitRedberries, meanRedberries)
-
-
-print(precisionRedberries)
