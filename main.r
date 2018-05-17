@@ -130,55 +130,56 @@ redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberries
 
 #hist(redberriesData, breaks = redberriesHistogramBreaks)
 
+blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
+blueberriesMeasuresOfAssociations$Mean
+blueberriesMeasuresOfDiversity <- MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
+blueberriesMeasuresOfDiversity$Variance
+redberriesMeasuresOfAssociations <- MeasuresOfAssociation(redberriesData)
+redberriesMeasuresOfAssociations$Mean
+redberriesMeasuresOfDiversity <- MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
+redberriesMeasuresOfDiversity$Variance
 
 
-
-
-Kolmogorow <- function(database)
+Kolmogorow <- function(database, mea, varia) 
+{ 
+  data<- sort(database) 
+  n <-length(data)
+  stdX <- database 
+  distributionTable <- 0.264  
+  inn<- database
+  distribution <-database
+  difference <-database
+  differenceTwo<- database 
   
-{
-data<- sort(database) 
-n <-length(data)
-standardScore<-data 
-empiricalDistribution<-data 
-empiricalDistributionTWo<-data 
-#differenceTwo <-data
-
 for (i in 1:n) 
 {
-  hypotheticalDistribution[i] <- pnorm(standardScore[i])
-}
-
-
-for (i in 1:n) 
-{
-  empiricalDistribution[i]<-i/ length(data)
+  stdX[i]<- ((data[i] -mea )/ sqrt(varia) )
 }
 
 for (i in 1:n) 
 {
-  empiricalDistributionTWo[i]<- ((i-1)/ length(data))
+  inn[i] <- (i / n )
+}
+  
+for (i in 1:n) 
+{
+  distribution[i] <- pnorm(stdX[i]) 
 }
 
 for (i in 1:n) 
 {
-  difference[i] <-abs(hypotheticalDistribution[i] - empiricalDistribution[i])
+  difference[i] <-abs(distribution [i] -inn [i] )  
 }
 
 for (i in 1:n) 
 {
-  differenceTwo[i] <-abs(hypotheticalDistribution[i] - empiricalDistributionTWo[i])
+  differenceTwo[i] <-abs( (i -1) / n -distribution [i]) 
 }
 
 
 tmp <-max (difference)
-tmpTwo <-max (differenceTwo)
+tmpSec <-max (differenceTwo)
 testStatisticValue <-pmax (difference, differenceTwo)
-
-
-#writeLines("H0 - normal distribution\n")
-#writeLines("H1 - non normal distribution\n")
-
 
 
 if(testStatisticValue < distributionTable || testStatisticValue> 1)
@@ -187,18 +188,19 @@ if(testStatisticValue < distributionTable || testStatisticValue> 1)
   writeLines("Normal distribution\n")
 }
 
-else{
+else
+{
   writeLines("We can rule out hypothesis H0\n")
   writeLines("Non normal distribuion\n")
-
 }
+
 }
 
 writeLines("blueberries:\n")
-blueberrieKolmogorow <- Kolmogorow(blueberriesData)
+blueberrieKolmogorow <- Kolmogorow(blueberriesData,blueberriesMeasuresOfAssociations$Mean,  blueberriesMeasuresOfDiversity$Variance)
+
 
 writeLines("redberries:\n")
-redberrieKolmogorow <- Kolmogorow(redberriesData)
- 
+redberrieKolmogorow <- Kolmogorow(redberriesData, redberriesMeasuresOfAssociations$Mean,  redberriesMeasuresOfDiversity$Variance)
 
 
